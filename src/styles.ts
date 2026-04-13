@@ -6,14 +6,14 @@ export const cardStyles = css`
   }
 
   ha-card {
-    padding: 8px 8px 10px 8px;
+    padding: 6px 4px 8px 4px;
     overflow: hidden;
   }
 
   .title {
     font-size: var(--ha-card-header-font-size, 1.2em);
     font-weight: 500;
-    padding: 2px 4px 8px 4px;
+    padding: 2px 4px 6px 4px;
     color: var(--primary-text-color);
   }
 
@@ -26,31 +26,38 @@ export const cardStyles = css`
 
   th,
   td {
-    padding: 3px 4px;
+    padding: 2px 2px;
     vertical-align: middle;
     border-bottom: 1px solid var(--divider-color, rgba(0, 0, 0, 0.08));
     font-size: 0.85em;
     color: var(--primary-text-color);
+    box-sizing: border-box;
   }
 
   thead th {
     font-weight: 600;
     text-align: center;
     padding-top: 2px;
-    padding-bottom: 6px;
+    padding-bottom: 4px;
     border-bottom: 2px solid var(--divider-color, rgba(0, 0, 0, 0.15));
     color: var(--secondary-text-color);
     text-transform: uppercase;
-    letter-spacing: 0.03em;
-    font-size: 0.72em;
+    letter-spacing: 0.02em;
+    font-size: 0.7em;
   }
 
-  /* Időpont oszlop a bal szélen */
+  /* Időpont oszlop a bal szélen — csak annyi szélességet foglal, hogy a
+     „1. óra" + opcionális „08:00–08:45" elférjen. */
   .time-col {
-    width: 60px;
+    width: 44px;
     text-align: left;
+    padding-left: 4px;
     color: var(--secondary-text-color);
     font-variant-numeric: tabular-nums;
+  }
+  /* show_times: false — keskenyebb bal oszlop, csak a „1. óra" label fér el benne */
+  table.no-times .time-col {
+    width: 34px;
   }
   .time-col .period-label {
     font-weight: 600;
@@ -89,15 +96,15 @@ export const cardStyles = css`
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2px;
-    padding: 3px 4px;
-    border-radius: 5px;
+    gap: 1px;
+    padding: 2px 3px;
+    border-radius: 4px;
     border-left: 3px solid transparent;
     min-height: 20px;
     text-align: center;
   }
   .lesson ha-icon {
-    --mdc-icon-size: 18px;
+    --mdc-icon-size: 16px;
     color: var(--secondary-text-color);
     flex-shrink: 0;
   }

@@ -57,10 +57,15 @@ export class SchoolTimetableCard extends LitElement {
     const cfg = this._config;
     const todayVisible = cfg.days.includes(this._todayKey);
 
+    // Ha nincs idő-kiírás, a bal oszlopot keskenyítjük (a CSS a .no-times osztályra reagál).
+    const hasAnyRowTime =
+      cfg.showTimes && cfg.periods.some((p) => p.start !== undefined && p.end !== undefined);
+    const tableClass = hasAnyRowTime ? '' : 'no-times';
+
     return html`
       <ha-card>
         ${cfg.title ? html`<div class="title">${cfg.title}</div>` : nothing}
-        <table>
+        <table class=${tableClass}>
           <thead>
             <tr>
               <th class="time-col"></th>
