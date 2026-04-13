@@ -2,22 +2,17 @@ import { LitElement, html, nothing, TemplateResult } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { cardStyles } from './styles.js';
 import {
-  CardConfig,
   DAY_FROM_JS_INDEX,
   DAY_LABELS,
   DayKey,
+  NormalizedCell,
   Period,
-  SubjectMeta,
 } from './types.js';
-import { validateConfig } from './validate.js';
+import { NormalizedConfig, validateConfig } from './validate.js';
 
 const CARD_TAG = 'school-timetable-card';
+const VERSION = '0.1.0';
 const REFRESH_INTERVAL_MS = 5 * 60 * 1000; // 5 perc — éjfél körül biztos napot vált
-
-interface NormalizedConfig extends CardConfig {
-  days: DayKey[];
-  subjects: Record<string, SubjectMeta>;
-}
 
 @customElement(CARD_TAG)
 export class SchoolTimetableCard extends LitElement {
@@ -29,7 +24,7 @@ export class SchoolTimetableCard extends LitElement {
   private _refreshTimer?: number;
 
   public setConfig(config: unknown): void {
-    this._config = validateConfig(config) as NormalizedConfig;
+    this._config = validateConfig(config);
   }
 
   public getCardSize(): number {
@@ -71,9 +66,7 @@ export class SchoolTimetableCard extends LitElement {
               <th class="time-col"></th>
               ${cfg.days.map(
                 (day) => html`
-                  <th
-                    class=${todayVisible && day === this._todayKey ? 'today-head' : ''}
-                  >
+                  <th class=${todayVisible && day === this._todayKey ? 'today-head' : ''}>
                     ${DAY_LABELS[day]}
                   </th>
                 `,
@@ -90,35 +83,32 @@ export class SchoolTimetableCard extends LitElement {
 
   private _renderRow(period: Period, rowIdx: number, todayVisible: boolean): TemplateResult {
     const cfg = this._config!;
-    const isBreak = period.break === true;
+    const hasTime = period.start !== undefined && period.end !== undefined;
 
     return html`
-      <tr class=${isBreak ? 'break-row' : ''}>
+      <tr>
         <td class="time-col">
           ${period.label
             ? html`<span class="period-label">${period.label}</span>`
             : nothing}
-          <span class="period-time">${period.start}–${period.end}</span>
+          ${hasTime
+            ? html`<span class="period-time">${period.start}–${period.end}</span>`
+            : nothing}
         </td>
         ${cfg.days.map((day) => {
           const isToday = todayVisible && day === this._todayKey;
-          const cellClass = isToday ? 'today' : '';
-          if (isBreak) {
-            return html`<td class=${cellClass}>szünet</td>`;
-          }
-          const lessons = cfg.schedule[day] ?? [];
-          const subject = lessons[rowIdx] ?? null;
-          return html`<td class=${cellClass}>${this._renderLesson(subject)}</td>`;
+          const cell = cfg.schedule[day]?.[rowIdx] ?? { subject: null };
+          return html`<td class=${isToday ? 'today' : ''}>${this._renderLesson(cell)}</td>`;
         })}
       </tr>
     `;
   }
 
-  private _renderLesson(subject: string | null): TemplateResult {
-    if (!subject) {
+  private _renderLesson(cell: NormalizedCell): TemplateResult {
+    if (!cell.subject) {
       return html`<div class="empty">—</div>`;
     }
-    const meta = this._config?.subjects[subject] ?? {};
+    const meta = this._config?.subjects[cell.subject] ?? {};
     const style: string[] = [];
     if (meta.color) {
       style.push(`border-left-color: ${meta.color}`);
@@ -127,7 +117,12 @@ export class SchoolTimetableCard extends LitElement {
     return html`
       <div class="lesson" style=${style.join(';')}>
         ${meta.icon ? html`<ha-icon icon=${meta.icon}></ha-icon>` : nothing}
-        <span class="subject-name">${subject}</span>
+        <div class="text">
+          <span class="subject-name">${cell.subject}</span>
+          ${cell.time
+            ? html`<span class="cell-time">${cell.time}</span>`
+            : nothing}
+        </div>
       </div>
     `;
   }
@@ -154,7 +149,7 @@ window.customCards.push({
 
 // eslint-disable-next-line no-console
 console.info(
-  `%c SCHOOL-TIMETABLE-CARD %c v${'0.1.0'} `,
+  `%c SCHOOL-TIMETABLE-CARD %c v${VERSION} `,
   'color:white;background:#3f51b5;padding:2px 6px;border-radius:3px 0 0 3px',
   'color:#3f51b5;background:#eee;padding:2px 6px;border-radius:0 3px 3px 0',
 );

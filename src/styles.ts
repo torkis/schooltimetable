@@ -45,22 +45,23 @@ export const cardStyles = css`
     font-size: 0.8em;
   }
 
-  /* Időpont oszlop */
+  /* Időpont oszlop a bal szélen */
   .time-col {
-    width: 96px;
+    width: 84px;
     text-align: left;
     color: var(--secondary-text-color);
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
   }
   .time-col .period-label {
     font-weight: 600;
     color: var(--primary-text-color);
-    margin-right: 6px;
+    display: block;
   }
   .time-col .period-time {
-    font-size: 0.85em;
+    font-size: 0.8em;
     opacity: 0.85;
+    display: block;
+    margin-top: 2px;
   }
 
   /* Mai nap oszlop kiemelése */
@@ -82,38 +83,10 @@ export const cardStyles = css`
     border-top: 2px solid var(--primary-color);
   }
 
-  /* Szünet sor */
-  tr.break-row td {
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 6px,
-      var(--divider-color, rgba(0, 0, 0, 0.06)) 6px,
-      var(--divider-color, rgba(0, 0, 0, 0.06)) 12px
-    );
-    color: var(--secondary-text-color);
-    font-style: italic;
-    font-size: 0.85em;
-    padding-top: 4px;
-    padding-bottom: 4px;
-  }
-  tr.break-row td.today {
-    /* a szünet-háttérre rakjunk egy halvány primary tintet */
-    background:
-      color-mix(in srgb, var(--primary-color) 10%, transparent),
-      repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 6px,
-        var(--divider-color, rgba(0, 0, 0, 0.06)) 6px,
-        var(--divider-color, rgba(0, 0, 0, 0.06)) 12px
-      );
-  }
-
   /* Tantárgy cella */
   .lesson {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 6px;
     padding: 6px 8px;
     border-radius: 6px;
@@ -124,12 +97,25 @@ export const cardStyles = css`
     --mdc-icon-size: 20px;
     color: var(--secondary-text-color);
     flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .lesson .text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+    line-height: 1.2;
   }
   .lesson .subject-name {
     font-weight: 500;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .lesson .cell-time {
+    font-size: 0.78em;
+    color: var(--secondary-text-color);
+    font-variant-numeric: tabular-nums;
+    margin-top: 2px;
   }
   .empty {
     color: var(--disabled-text-color, rgba(0, 0, 0, 0.3));
@@ -145,15 +131,14 @@ export const cardStyles = css`
       font-size: 0.85em;
     }
     .time-col {
-      width: 64px;
-    }
-    .time-col .period-time {
-      display: block;
-      font-size: 0.75em;
+      width: 60px;
     }
     .lesson {
       padding: 4px 6px;
       gap: 4px;
+    }
+    .lesson ha-icon {
+      --mdc-icon-size: 16px;
     }
   }
 `;

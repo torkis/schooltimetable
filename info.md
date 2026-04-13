@@ -5,8 +5,7 @@ landscape módban, családi használatra tervezve.
 
 - YAML konfiguráció — nem kell külön integráció vagy sensor.
 - Több gyerek = több kártya példány (külön-külön konfig).
-- Fix időpontú órák + délutáni foglalkozások egy rácsban.
-- Szünetek külön sorban.
+- Fix órarend + délutáni / adhoc foglalkozások per-cella időponttal.
 - Aktuális nap oszlopa vizuálisan kiemelve.
 - Opcionális tantárgy-szín és Material Design ikon.
 

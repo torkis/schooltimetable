@@ -47,23 +47,35 @@ export const DAY_FROM_JS_INDEX: readonly DayKey[] = [
   'saturday',
 ] as const;
 
+/**
+ * Egy sor az órarendben. `start`/`end` opcionálisak: ha megvannak, a bal oldali
+ * idő-oszlopban megjelennek; ha nincsenek (pl. délutáni adhoc sor), csak a label.
+ */
 export interface Period {
-  /** Pl. "1."; break slotnál lehet üres. */
   label: string;
-  /** "HH:MM" */
-  start: string;
-  /** "HH:MM" */
-  end: string;
-  /** Ha true, ez egy szünet-sor, a schedule cellát figyelmen kívül hagyjuk. */
-  break?: boolean;
+  start?: string;
+  end?: string;
 }
 
 export interface SubjectMeta {
-  /** CSS szín, pl. "#ffb347" vagy "tomato". */
   color?: string;
-  /** Material Design ikon, pl. "mdi:calculator-variant". */
   icon?: string;
 }
+
+/**
+ * Egy cella a schedule-ban. Lehet:
+ *  - `null` / üres string: nincs óra.
+ *  - egyszerű string: tantárgynév (metaadatokat a `subjects` map-ből húzzuk).
+ *  - objektum: tantárgynév + per-cella időpont (délutáni / adhoc foglalkozás).
+ */
+export type ScheduleCell =
+  | string
+  | null
+  | {
+      subject: string;
+      /** Szöveges időpont, pl. "15:00" vagy "15:00–16:00". Szabadon formázható. */
+      time?: string;
+    };
 
 export interface CardConfig {
   type: string;
@@ -71,5 +83,11 @@ export interface CardConfig {
   days?: DayKey[];
   periods: Period[];
   subjects?: Record<string, SubjectMeta>;
-  schedule: Partial<Record<DayKey, (string | null)[]>>;
+  schedule: Partial<Record<DayKey, ScheduleCell[]>>;
+}
+
+/** Normalizált (belső) cella, amit a render már közvetlenül használ. */
+export interface NormalizedCell {
+  subject: string | null;
+  time?: string;
 }
