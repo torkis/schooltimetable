@@ -25,6 +25,8 @@ export interface NormalizedConfig {
   title?: string;
   days: DayKey[];
   showTimes: boolean;
+  /** Perc éjféltől. Ha van értéke, ettől kezdve a mai nap kiemelése átvált a következő iskolai napra. */
+  nextDayAfterMinutes?: number;
   periods: Period[];
   subjects: Record<string, SubjectMeta>;
   /** Minden nap pontosan `periods.length` hosszú; a hiányzókat üres cellával töltjük ki. */
@@ -137,11 +139,22 @@ export function validateConfig(raw: unknown): NormalizedConfig {
     throw new Error('`show_times` mezőnek boolean-nak kell lennie (true / false).');
   }
 
+  let nextDayAfterMinutes: number | undefined;
+  if (cfg.next_day_after !== undefined) {
+    if (typeof cfg.next_day_after !== 'string' || !TIME_RE.test(cfg.next_day_after)) {
+      throw new Error(
+        '`next_day_after` érvénytelen (HH:MM formátum kell, pl. "20:00").',
+      );
+    }
+    nextDayAfterMinutes = toMinutes(cfg.next_day_after);
+  }
+
   return {
     type: typeof cfg.type === 'string' ? cfg.type : 'custom:school-timetable-card',
     title: typeof cfg.title === 'string' ? cfg.title : undefined,
     days,
     showTimes: cfg.show_times !== false,
+    nextDayAfterMinutes,
     periods,
     subjects: cfg.subjects && typeof cfg.subjects === 'object' ? cfg.subjects : {},
     schedule,

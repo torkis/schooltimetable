@@ -25,6 +25,8 @@ export class SchoolTimetableCard extends LitElement {
 
   public setConfig(config: unknown): void {
     this._config = validateConfig(config);
+    // Újrakalkuláljuk a „mai nap"-ot, mert a next_day_after vagy a days változhatott.
+    this._updateToday();
   }
 
   public getCardSize(): number {
@@ -46,7 +48,27 @@ export class SchoolTimetableCard extends LitElement {
   }
 
   private _updateToday(): void {
-    const current = DAY_FROM_JS_INDEX[new Date().getDay()];
+    const now = new Date();
+    let jsIdx = now.getDay();
+
+    // Ha a config `next_day_after` küszöböt ad, és már túl vagyunk rajta, a mai nap
+    // kiemelése átlép a következő napra — és onnan továbbgörgetjük az első olyanra,
+    // ami szerepel a `days` listában (hogy péntek 20:00-kor ne Szombat, hanem Hétfő
+    // legyen kijelölve). Ha `days` nincs (elvileg sosem), a bump-nál megállunk.
+    const cfg = this._config;
+    if (cfg?.nextDayAfterMinutes !== undefined) {
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+      if (nowMinutes >= cfg.nextDayAfterMinutes) {
+        jsIdx = (jsIdx + 1) % 7;
+        if (cfg.days.length > 0) {
+          for (let i = 0; i < 7 && !cfg.days.includes(DAY_FROM_JS_INDEX[jsIdx]); i++) {
+            jsIdx = (jsIdx + 1) % 7;
+          }
+        }
+      }
+    }
+
+    const current = DAY_FROM_JS_INDEX[jsIdx];
     if (current !== this._todayKey) {
       this._todayKey = current;
     }
@@ -61,6 +83,12 @@ export class SchoolTimetableCard extends LitElement {
     const hasAnyRowTime =
       cfg.showTimes && cfg.periods.some((p) => p.start !== undefined && p.end !== undefined);
     const tableClass = hasAnyRowTime ? '' : 'no-times';
+
+    // Az első olyan sor indexe, aminek nincs start/end-je — „délutáni / adhoc" blokk
+    // eleje. Ezzel a CSS felső elválasztót tud tenni, és a sorok halvány háttért kapnak.
+    const firstAfternoonIdx = cfg.periods.findIndex(
+      (p) => p.start === undefined || p.end === undefined,
+    );
 
     return html`
       <ha-card>
@@ -79,20 +107,35 @@ export class SchoolTimetableCard extends LitElement {
             </tr>
           </thead>
           <tbody>
-            ${cfg.periods.map((period, rowIdx) => this._renderRow(period, rowIdx, todayVisible))}
+            ${cfg.periods.map((period, rowIdx) =>
+              this._renderRow(period, rowIdx, todayVisible, firstAfternoonIdx),
+            )}
           </tbody>
         </table>
       </ha-card>
     `;
   }
 
-  private _renderRow(period: Period, rowIdx: number, todayVisible: boolean): TemplateResult {
+  private _renderRow(
+    period: Period,
+    rowIdx: number,
+    todayVisible: boolean,
+    firstAfternoonIdx: number,
+  ): TemplateResult {
     const cfg = this._config!;
     const showTime =
       cfg.showTimes && period.start !== undefined && period.end !== undefined;
+    const isAfternoon = period.start === undefined || period.end === undefined;
+    const isFirstAfternoon = rowIdx === firstAfternoonIdx && firstAfternoonIdx >= 0;
+    const trClasses = [
+      isAfternoon ? 'afternoon' : '',
+      isFirstAfternoon ? 'afternoon-start' : '',
+    ]
+      .filter(Boolean)
+      .join(' ');
 
     return html`
-      <tr>
+      <tr class=${trClasses}>
         <td class="time-col">
           ${period.label
             ? html`<span class="period-label">${period.label}</span>`

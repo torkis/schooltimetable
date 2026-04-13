@@ -87,6 +87,13 @@ export interface CardConfig {
    * Alapértelmezés: `true`.
    */
   show_times?: boolean;
+  /**
+   * Napi határidő `HH:MM` formátumban, ami után a „mai nap" kiemelése átvált a
+   * **következő iskolai napra** (a `days`-ben szereplő napok közül). Pl. "20:00"
+   * esetén este 8-tól a gyerek már a másnapi órarendet látja kijelölve. Nincs
+   * alapérték — ha hiányzik, a váltás éjfélkor történik (mint korábban).
+   */
+  next_day_after?: string;
   periods: Period[];
   subjects?: Record<string, SubjectMeta>;
   schedule: Partial<Record<DayKey, ScheduleCell[]>>;

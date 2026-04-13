@@ -71,6 +71,21 @@ export const cardStyles = css`
     margin-top: 1px;
   }
 
+  /* Délutáni / adhoc sorok — finoman elkülönítve a fix órarendtől */
+  tr.afternoon td {
+    background: color-mix(in srgb, var(--primary-text-color) 4%, transparent);
+  }
+  tr.afternoon .time-col .period-label {
+    font-style: italic;
+    font-weight: 500;
+    opacity: 0.75;
+  }
+  /* Az első délutáni sor — vastag elválasztó a fix órák után + egy kis extra légrés */
+  tr.afternoon-start td {
+    border-top: 2px dashed var(--divider-color, rgba(0, 0, 0, 0.2));
+    padding-top: 6px;
+  }
+
   /* Mai nap oszlop kiemelése */
   .today-head {
     color: var(--primary-color);
@@ -167,6 +182,9 @@ export const cardStyles = css`
     .time-col .period-time {
       font-size: 0.8em;
       margin-top: 3px;
+    }
+    tr.afternoon-start td {
+      padding-top: 14px;
     }
     .lesson {
       flex-direction: row;
