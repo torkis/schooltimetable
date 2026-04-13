@@ -134,32 +134,57 @@ export const cardStyles = css`
     font-size: 1.1em;
   }
 
-  /* Nagyobb kijelzőn (egyetlen kártya, széles oszlop) férőhely van vízszintes
-     ikon + szöveg elrendezésre — ott visszaváltunk sorra. */
+  /* Nagyobb kijelzőn (egyetlen kártya, széles oszlop — pl. panel-mode) férőhely
+     van vízszintes ikon + szöveg elrendezésre és szellősebb sorközökre. */
   @media (min-width: 900px) {
+    ha-card {
+      padding: 12px 14px 16px 14px;
+    }
+    .title {
+      font-size: var(--ha-card-header-font-size, 1.4em);
+      padding: 4px 4px 12px 4px;
+    }
+    thead th {
+      padding-top: 4px;
+      padding-bottom: 10px;
+      letter-spacing: 0.04em;
+      font-size: 0.8em;
+    }
+    th,
+    td {
+      padding: 10px 10px;
+      font-size: 1em;
+    }
+    .time-col {
+      width: 92px;
+      padding-left: 8px;
+    }
+    .time-col .period-time {
+      font-size: 0.8em;
+      margin-top: 3px;
+    }
     .lesson {
       flex-direction: row;
       align-items: center;
       justify-content: flex-start;
-      gap: 6px;
-      padding: 5px 8px;
+      gap: 10px;
+      padding: 10px 12px;
       border-left-width: 4px;
+      border-radius: 6px;
       text-align: left;
+      min-height: 32px;
     }
     .lesson ha-icon {
-      --mdc-icon-size: 20px;
+      --mdc-icon-size: 22px;
     }
     .lesson .text {
       flex: 1 1 auto;
       width: auto;
+      line-height: 1.35;
     }
-    th,
-    td {
-      padding: 6px 8px;
-      font-size: 0.95em;
-    }
-    .time-col {
-      width: 84px;
+    .lesson .cell-time {
+      font-size: 0.8em;
+      margin-top: 3px;
     }
   }
 `;
