@@ -24,6 +24,7 @@ export interface NormalizedConfig {
   type: string;
   title?: string;
   days: DayKey[];
+  showTimes: boolean;
   periods: Period[];
   subjects: Record<string, SubjectMeta>;
   /** Minden nap pontosan `periods.length` hosszú; a hiányzókat üres cellával töltjük ki. */
@@ -132,10 +133,15 @@ export function validateConfig(raw: unknown): NormalizedConfig {
     schedule[key] = normalized;
   }
 
+  if (cfg.show_times !== undefined && typeof cfg.show_times !== 'boolean') {
+    throw new Error('`show_times` mezőnek boolean-nak kell lennie (true / false).');
+  }
+
   return {
     type: typeof cfg.type === 'string' ? cfg.type : 'custom:school-timetable-card',
     title: typeof cfg.title === 'string' ? cfg.title : undefined,
     days,
+    showTimes: cfg.show_times !== false,
     periods,
     subjects: cfg.subjects && typeof cfg.subjects === 'object' ? cfg.subjects : {},
     schedule,

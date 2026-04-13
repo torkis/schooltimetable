@@ -144,7 +144,8 @@ cards:
 |---|---|---|---|
 | `title` | string | nem | Kártya fejléc (pl. a gyerek neve). |
 | `days` | string lista | nem | Megjelenítendő napok. Alapértelmezett: hétfő–péntek. Érvényes: `monday`…`sunday`. |
-| `periods` | lista | **igen** | Sorok. Minden elem: `label` (szöveg). A `start` és `end` (`HH:MM`) opcionális — ha megadod, a bal oldali oszlopban megjelennek. Délutáni adhoc sorokhoz hagyd el. |
+| `show_times` | boolean | nem | Ha `false`, a `periods` `start`/`end` időpontjai **nem** jelennek meg a bal oszlopban — csak a `label` (pl. „1. óra"). Alapértelmezett: `true`. A cellákon belüli `time` mezőt nem érinti. |
+| `periods` | lista | **igen** | Sorok. Minden elem: `label` (szöveg). A `start` és `end` (`HH:MM`) opcionális — ha megadod, a bal oldali oszlopban megjelennek (hacsak a `show_times: false` el nem rejti). Délutáni adhoc sorokhoz hagyd el. |
 | `subjects` | map | nem | Tantárgy-metaadatok: `color` (CSS szín) és `icon` (`mdi:*`). |
 | `schedule` | map | **igen** | Naponkénti lista. Egy cella lehet: tantárgynév (string), `null` vagy üres (nincs óra), vagy objektum `{ subject, time }` (cellán belüli időponttal). |
 

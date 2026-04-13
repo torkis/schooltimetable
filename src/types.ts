@@ -81,6 +81,12 @@ export interface CardConfig {
   type: string;
   title?: string;
   days?: DayKey[];
+  /**
+   * Ha `false`, a fix órák `start`/`end` időpontja nem jelenik meg a bal oszlopban
+   * — csak a `label` (pl. „1. óra"). A cellán belüli `time` mezőt nem érinti.
+   * Alapértelmezés: `true`.
+   */
+  show_times?: boolean;
   periods: Period[];
   subjects?: Record<string, SubjectMeta>;
   schedule: Partial<Record<DayKey, ScheduleCell[]>>;

@@ -83,7 +83,8 @@ export class SchoolTimetableCard extends LitElement {
 
   private _renderRow(period: Period, rowIdx: number, todayVisible: boolean): TemplateResult {
     const cfg = this._config!;
-    const hasTime = period.start !== undefined && period.end !== undefined;
+    const showTime =
+      cfg.showTimes && period.start !== undefined && period.end !== undefined;
 
     return html`
       <tr>
@@ -91,7 +92,7 @@ export class SchoolTimetableCard extends LitElement {
           ${period.label
             ? html`<span class="period-label">${period.label}</span>`
             : nothing}
-          ${hasTime
+          ${showTime
             ? html`<span class="period-time">${period.start}–${period.end}</span>`
             : nothing}
         </td>
