@@ -117,8 +117,9 @@ export class SchoolTimetableCard extends LitElement {
     const meta = this._config?.subjects[cell.subject] ?? {};
     const style: string[] = [];
     if (meta.color) {
-      style.push(`border-left-color: ${meta.color}`);
-      style.push(`background: color-mix(in srgb, ${meta.color} 18%, transparent)`);
+      // A tantárgyszínt egyetlen custom prop-ba tesszük; a CSS innen húzza ki
+      // a hátteret, bal szegélyt és az ikon színét is (kontrasztosítva).
+      style.push(`--subject-color: ${meta.color}`);
     }
     return html`
       <div class="lesson" style=${style.join(';')}>

@@ -99,13 +99,18 @@ export const cardStyles = css`
     gap: 1px;
     padding: 2px 3px;
     border-radius: 4px;
-    border-left: 3px solid transparent;
+    /* Ha a cellához van tantárgyszín, a --subject-color be van állítva a renderben;
+       ha nincs, a fallback transzparens marad (natúr cella). */
+    border-left: 4px solid var(--subject-color, transparent);
+    background: color-mix(in srgb, var(--subject-color, transparent) 28%, transparent);
     min-height: 20px;
     text-align: center;
   }
   .lesson ha-icon {
     --mdc-icon-size: 16px;
-    color: var(--secondary-text-color);
+    /* Ikonszín = tantárgyszín, de a szöveg színével kevert, hogy pasztellek is
+       olvashatók maradjanak fehér és sötét témán egyaránt. */
+    color: color-mix(in srgb, var(--subject-color, var(--secondary-text-color)) 60%, var(--primary-text-color));
     flex-shrink: 0;
   }
   .lesson .text {
@@ -169,10 +174,13 @@ export const cardStyles = css`
       justify-content: flex-start;
       gap: 10px;
       padding: 10px 12px;
-      border-left-width: 4px;
+      border-left-width: 5px;
       border-radius: 6px;
       text-align: left;
       min-height: 32px;
+      /* Széles nézetben egy fokkal telítettebb háttér, mert a cella nagy és
+         a színsáv nem eléggé dominál magában. */
+      background: color-mix(in srgb, var(--subject-color, transparent) 34%, transparent);
     }
     .lesson ha-icon {
       --mdc-icon-size: 22px;
